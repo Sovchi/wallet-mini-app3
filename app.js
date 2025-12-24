@@ -1,25 +1,18 @@
-const tg = window.Telegram.WebApp;
-tg.ready();
+<button id="connect">Connect TON</button>
+<script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk@1.2.0/dist/tonconnect.umd.js"></script>
+<script>
+  const tonConnect = new TonConnect({
+      manifestUrl: "https://sovchi.github.io/wallet-mini-app3/tonconnect-manifest.json"
+  });
 
-const connector = new TonConnectSDK.TonConnect({
-  manifestUrl: "https://YOUR_DOMAIN/tonconnect-manifest.json"
-});
-
-document.getElementById("connect").onclick = async () => {
-  await connector.connectWallet();
-};
-
-connector.onStatusChange(wallet => {
-  if (!wallet) return;
-
-  const data = {
-    address: wallet.account.address,
-    publicKey: wallet.account.publicKey
+  document.getElementById("connect").onclick = async () => {
+      try {
+          const wallet = await tonConnect.connect();
+          // Відправляємо адресу боту через Telegram WebApp
+          Telegram.WebApp.sendData(JSON.stringify({ address: wallet.account.address }));
+      } catch (e) {
+          console.error(e);
+          alert("Failed to connect wallet");
+      }
   };
-
-  // ВІДПРАВКА ДАНИХ У БОТА
-  tg.sendData(JSON.stringify(data));
-
-  // Закриваємо Mini App
-  tg.close();
-});
+</script>
