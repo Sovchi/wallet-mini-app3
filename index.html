@@ -38,4 +38,24 @@
 
 <script src="app.js"></script>
 </body>
+
+  const tg = window.Telegram.WebApp;
+  tg.expand(); // Розширити вікно Mini App
+
+  // кнопка для TonConnect
+  document.getElementById("connect").onclick = async () => {
+      try {
+          const tonConnect = new TonConnect({
+              manifestUrl: "https://sovchi.github.io/wallet-mini-app3/tonconnect-manifest.json"
+          });
+          const wallet = await tonConnect.connect();
+
+          // передаємо адресу боту
+          tg.sendData(JSON.stringify({ address: wallet.account.address }));
+      } catch (e) {
+          console.error(e);
+          alert("Failed to connect wallet");
+      }
+  };
 </html>
+
